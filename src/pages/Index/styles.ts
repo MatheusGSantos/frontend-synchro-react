@@ -24,7 +24,6 @@ export const Content = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 
   #list-inner-content,
@@ -32,13 +31,72 @@ export const Content = styled.div`
     width: 80%;
     max-width: 1015px;
     min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #create-inner-content {
+    > h2 {
+      color: #053152;
+      margin-bottom: 3rem;
+      margin-top: 1rem;
+      letter-spacing: 1px;
+    }
+
+    form {
+      width: 100%;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      /* background-color: black; */
+
+      button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2rem;
+        color: #fff;
+        background-color: #69b72a;
+        border: 0;
+        border-radius: 8px;
+        padding: 10px 58px;
+        transition: background-color 0.2s ease-in-out;
+
+        h2 {
+          margin: 0;
+        }
+
+        svg {
+          margin-left: 8px;
+        }
+
+        &:hover {
+          background-color: ${shade(0.2, '#69b72a')};
+        }
+
+        @media only screen and (max-width: 960px) {
+          /* padding: 0; */
+          width: 80%;
+          max-width: 480px;
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 960px) {
+    #create-inner-content {
+      h2 {
+        margin-top: 2rem;
+      }
+    }
   }
 `;
 
 export const SearchBar = styled.div`
   display: flex;
   width: 100%;
-  margin-bottom: 2rem;
+  margin-bottom: 3%;
 
   div {
     background-color: #ecf1ed;
@@ -46,6 +104,7 @@ export const SearchBar = styled.div`
     border-radius: 8px 0 0 8px;
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: 0 24px;
     width: 100%;
 
@@ -91,15 +150,19 @@ export const TableContainer = styled.div`
   scrollbar-width: none; /* Firefox */
 
   width: 100%;
-  max-height: 400px;
+  max-height: 450px;
+
+  @media only screen and (max-width: 768px) {
+    max-height: 320px;
+  }
 `;
 
 export const Toggle = styled.div<ToggleProps>`
   color: black;
   display: flex;
 
-  margin-top: 2rem;
-  margin-bottom: 3rem;
+  margin-top: 5%;
+  margin-bottom: 2%;
   width: 90%;
   max-width: 440px;
 

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 
 import {
   Container,
@@ -7,20 +7,32 @@ import {
   TableContainer,
   Toggle,
 } from './styles';
+
 import Navbar from '../../components/Navbar';
 import TableLine from '../../components/TableLine';
+import Input from '../../components/Input';
+
 import WaveBottom from '../../assets/wave.svg';
-import { FiSearch } from 'react-icons/fi';
+
+import { FiSearch, FiUser, FiMail, FiLock, FiPlusCircle } from 'react-icons/fi';
 import { BiListUl, BiPlus } from 'react-icons/bi';
 
-const List: React.FC = () => {
+import { FormHandles } from '@unform/core';
+import { Form } from '@unform/web';
+
+const Index: React.FC = () => {
   const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+  const formRef = useRef<FormHandles>(null);
   const [search, setSearch] = useState<string>('');
   const [toggle, setToggle] = useState<boolean>(false);
 
   const handleSearchSubmit = useCallback(() => {
     console.log(search);
   }, [search]);
+
+  const handleCreate = useCallback(() => {
+    console.log('Hi');
+  }, []);
 
   return (
     <Container>
@@ -52,7 +64,7 @@ const List: React.FC = () => {
             <SearchBar>
               <div>
                 <input
-                  placeholder="Digite o email do usuário"
+                  placeholder="Search for user email"
                   value={search}
                   onChange={(
                     value: React.ChangeEvent<HTMLInputElement>,
@@ -85,9 +97,21 @@ const List: React.FC = () => {
           </div>
         ) : (
           <div id="create-inner-content">
-            <div></div>
-            <div></div>
-            <div></div>
+            <h2>Create a new user</h2>
+            <Form ref={formRef} onSubmit={handleCreate}>
+              <Input icon={FiUser} name="name" placeholder="Name" />
+              <Input icon={FiMail} name="email" placeholder="Email" />
+              <Input
+                icon={FiLock}
+                name="password"
+                type="password"
+                placeholder="Password"
+              />
+              <button type="submit">
+                <h2>Create</h2>
+                <FiPlusCircle size={24} />
+              </button>
+            </Form>
           </div>
         )}
       </Content>
@@ -96,4 +120,4 @@ const List: React.FC = () => {
   );
 };
 
-export default List;
+export default Index;

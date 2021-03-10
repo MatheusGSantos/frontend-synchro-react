@@ -31,6 +31,7 @@ export const Container = styled.div<TableLineProps>`
     }
   }
 
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -38,4 +39,8 @@ export const Container = styled.div<TableLineProps>`
   padding: 10px 30px;
   border-radius: 5px;
   margin-bottom: 0.5rem;
+
+  @media only screen and (max-width: 960px) {
+    flex-direction: column;
+  }
 `;
