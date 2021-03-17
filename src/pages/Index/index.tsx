@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
+import * as Yup from 'yup';
 
 import {
   Container,
@@ -20,18 +21,66 @@ import { BiListUl, BiPlus } from 'react-icons/bi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 
+import api from '../../services/api';
+
+import UserDTO from '../../dtos/UserDTO';
+import getValidationErrors from '../../utils/getValidationErrors';
+
+interface SignUpFormData {
+  name: string;
+  email: string;
+  password: string;
+}
+
 const Index: React.FC = () => {
-  const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
   const formRef = useRef<FormHandles>(null);
+
   const [search, setSearch] = useState<string>('');
   const [toggle, setToggle] = useState<boolean>(false);
+  const [searchResults, setSearchResults] = useState<UserDTO[]>([]);
 
-  const handleSearchSubmit = useCallback(() => {
-    console.log(search);
+  const handleSearchSubmit = useCallback(async () => {
+    try {
+      const result = await api.get(
+        '/users' + (search ? `?email=${search}` : ''),
+      );
+
+      if (result.status === 200) {
+        setSearchResults(result.data);
+      }
+    } catch (error) {
+      setSearchResults([]);
+      alert(`${search} was not found`);
+    }
   }, [search]);
 
-  const handleCreate = useCallback(() => {
-    console.log('Hi');
+  const handleCreate = useCallback(async (data: SignUpFormData) => {
+    try {
+      formRef.current?.setErrors({});
+
+      const schema = Yup.object().shape({
+        name: Yup.string().required('Nome obrigatório'),
+        email: Yup.string()
+          .required('Email obrigatório')
+          .email('Digite um email válido'),
+        password: Yup.string().min(6, 'A senha deve ter no mínimo 6 dígitos'),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      const response = await api.post('/users', data);
+
+      if (response.status === 200) {
+        alert('User created successfully');
+        setToggle(false);
+      }
+    } catch (err) {
+      const errors = getValidationErrors(err);
+
+      formRef.current?.setErrors(errors);
+    }
   }, []);
 
   return (
@@ -66,6 +115,7 @@ const Index: React.FC = () => {
                 <input
                   placeholder="Search for user email"
                   value={search}
+                  autoComplete="false"
                   onChange={(
                     value: React.ChangeEvent<HTMLInputElement>,
                   ): void => {
@@ -82,17 +132,20 @@ const Index: React.FC = () => {
               bgColor={'#053152'}
               fontColor={'#FFF'}
               fontSize={'1.125rem'}
+              info={{ id: 'ID', name: 'Name', email: 'Email' }}
             ></TableLine>
             <TableContainer>
-              {array.map(element => (
-                <TableLine
-                  border={'1px solid #b3bec8'}
-                  bgColor={'#dee9f2'}
-                  fontColor={'#515151'}
-                  fontSize={'0.875rem'}
-                  key={element.toString()}
-                ></TableLine>
-              ))}
+              {searchResults.length &&
+                searchResults.map(element => (
+                  <TableLine
+                    border={'1px solid #b3bec8'}
+                    bgColor={'#dee9f2'}
+                    fontColor={'#515151'}
+                    fontSize={'0.875rem'}
+                    key={element.id}
+                    info={element}
+                  ></TableLine>
+                ))}
             </TableContainer>
           </div>
         ) : (

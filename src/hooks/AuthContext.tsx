@@ -1,9 +1,9 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
 import api from '../services/api';
+import { useHistory } from 'react-router-dom';
 
 interface AuthState {
   token: string;
-  user: Record<string, unknown>;
 }
 
 interface SignInCredentials {
@@ -12,48 +12,69 @@ interface SignInCredentials {
 }
 
 interface AuthContextData {
-  user: Record<string, unknown>;
+  token: string;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
+  isAuthenticated(): boolean;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider: React.FC = ({ children }) => {
-  const [data, setData] = useState<AuthState>(() => {
-    const token = localStorage.getItem('@GoBarber:token');
-    const user = localStorage.getItem('@GoBarber:user');
+  const history = useHistory();
 
-    if (token && user) {
-      return { token, user: JSON.parse(user) };
+  const [data, setData] = useState<AuthState>(() => {
+    const token = localStorage.getItem('@SpringCrud:token');
+
+    if (token) {
+      return { token };
     }
 
     return {} as AuthState;
   });
 
-  const signIn = useCallback(async ({ email, password }) => {
-    const response = await api.post('sessions', {
-      email,
-      password,
-    });
+  const signIn = useCallback(
+    async ({ email, password }) => {
+      try {
+        const response = await api.post('/auth', {
+          email,
+          password,
+        });
 
-    const { token, user } = response.data;
+        const { token } = response.data;
 
-    localStorage.setItem('@GoBarber:token', token);
-    localStorage.setItem('@GoBarber:user', JSON.stringify(user));
+        localStorage.setItem('@SpringCrud:token', token);
 
-    setData({ token, user });
-  }, []);
+        setData({ token });
+
+        alert('Signed in successfully');
+        history.push('/index');
+      } catch (error) {
+        alert('Invalid username/password');
+      }
+    },
+    [history],
+  );
 
   const signOut = useCallback(() => {
-    localStorage.removeItem('@GoBarber:token');
-    localStorage.removetem('@GoBarber:user');
+    localStorage.removeItem('@SpringCrud:token');
 
     setData({} as AuthState);
-  }, []);
+    history.push('/login');
+  }, [history]);
+
+  const isAuthenticated = useCallback(() => {
+    if (data.token) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [data.token]);
 
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ token: data.token, signIn, signOut, isAuthenticated }}
+    >
       {children}
     </AuthContext.Provider>
   );

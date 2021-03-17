@@ -49,7 +49,7 @@ export const Content = styled.div`
       align-items: center;
       display: flex;
       flex-direction: column;
-      /* background-color: black; */
+      overflow: visible;
 
       button {
         display: flex;
@@ -76,7 +76,6 @@ export const Content = styled.div`
         }
 
         @media only screen and (max-width: 960px) {
-          /* padding: 0; */
           width: 80%;
           max-width: 480px;
         }

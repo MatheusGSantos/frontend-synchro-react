@@ -28,8 +28,9 @@ export const UserLogged = styled.a`
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: #d0d0d0;
+  background-color: #69b72a;
   color: #fff;
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;

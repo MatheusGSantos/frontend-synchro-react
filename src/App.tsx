@@ -1,17 +1,18 @@
 import React from 'react';
 
 import GlobalStyle from './styles/global';
-// import SignIn from './pages/SignIn';
-// import SignUp from './pages/SignUp';
-import Index from './pages/Index';
+import Routes from './routes';
 
 import { AuthProvider } from './hooks/AuthContext';
+import { BrowserRouter } from 'react-router-dom';
 
 const App: React.FC = () => (
   <>
-    <AuthProvider>
-      <Index />
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
+    </BrowserRouter>
 
     <GlobalStyle />
   </>

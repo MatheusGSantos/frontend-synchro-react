@@ -1,6 +1,10 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Container = styled.div`
+interface InputProps {
+  isErrored: boolean;
+}
+
+export const InputContainer = styled.div<InputProps>`
   width: 80%;
   max-width: 480px;
   display: flex;
@@ -9,6 +13,7 @@ export const Container = styled.div`
   border-radius: 8px;
   padding: 16px;
   border: 1px solid #d9d9d9;
+  overflow: visible;
 
   & + div {
     margin-top: 16px;
@@ -30,4 +35,10 @@ export const Container = styled.div`
     color: black;
     margin-right: 14px;
   }
+
+  ${props =>
+    props.isErrored &&
+    css`
+      border-color: #ce1446;
+    `}
 `;
